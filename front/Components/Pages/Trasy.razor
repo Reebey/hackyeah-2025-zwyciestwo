@@ -1,0 +1,50 @@
+﻿@page "/trasy"
+
+<div class="container mt-4">
+    <form id="searchForm" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label for="stacjaPoczatkowa" class="form-label">Stacja początkowa</label>
+            <select class="form-select" id="stacjaPoczatkowa" required>
+                <option value="" selected disabled>Wybierz stację początkową</option>
+                <option value="warszawa">Warszawa</option>
+                <option value="krakow">Kraków</option>
+                <option value="wroclaw">Wrocław</option>
+                <option value="poznan">Poznań</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="stacjaDocelowa" class="form-label">Stacja docelowa</label>
+            <select class="form-select" id="stacjaDocelowa" required>
+                <option value="" selected disabled>Wybierz stację docelową</option>
+                <option value="gdansk">Gdańsk</option>
+                <option value="szczecin">Szczecin</option>
+                <option value="lodz">Łódź</option>
+                <option value="katowice">Katowice</option>
+            </select>
+        </div>
+
+        <div class="input-group" id="datetimepicker" data-td-target-input="nearest" data-td-target-toggle="nearest">
+            <input type="text" class="form-control" data-td-target="#datetimepicker" placeholder="Wybierz datę" />
+            <span class="input-group-text" data-td-target="#datetimepicker" data-td-toggle="datetimepicker">
+                <i class="fa fa-calendar"></i>
+            </span>
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fa fa-search me-2"></i>Szukaj
+            </button>
+        </div>
+    </form>
+
+    <hr />
+
+    <h5>Trasy</h5>
+    <ul class="list-group" id="trasyList"></ul>
+
+    <hr />
+
+    <h5>Ulubione trasy</h5>
+    <ul class="list-group" id="favouritesList"></ul>
+</div>
