@@ -5,6 +5,18 @@
 GET {{host}}/
 Accept: application/json
 
+### Meta
+GET {{host}}/meta
+Accept: application/json
+
+### Health
+GET {{host}}/health
+Accept: application/json
+
+### OpenAPI JSON
+GET {{host}}/openapi/v1.json
+Accept: application/json
+
 ### Realtime: Vehicles
 # Podmieñ nazwê pliku jeœli inna (np. VehiclePositions_T.pb)
 GET {{host}}/api/rt/vehicles?file=VehiclePositions.pb
@@ -15,7 +27,7 @@ GET {{host}}/api/rt/trip-updates?file=TripUpdates.pb
 Accept: application/json
 
 ### Realtime: Alerts
-GET {{host}}/api/rt/alerts?file=ServiceAlerts.pb
+GET {{host}}/api/rt/alerts?file=ServiceAlerts_T.pb
 Accept: application/json
 
 ### Static: Stops (z paczki GTFS zip)
@@ -28,4 +40,12 @@ Accept: application/json
 
 ### Static: Trips
 GET {{host}}/api/static/trips?zip=GTFS_KRK_T.zip
+Accept: application/json
+
+### Enriched vehicles (bez TripUpdates)
+GET {{host}}/v1/rt/vehicles/enriched?file=VehiclePositions.pb&zip=GTFS_KRK_T.zip
+Accept: application/json
+
+### Enriched vehicles (z TripUpdates -> lepszy next/eta/delay)
+GET {{host}}/v1/rt/vehicles/enriched?file=VehiclePositions.pb&zip=GTFS_KRK_T.zip&tripUpdates=TripUpdates.pb
 Accept: application/json
