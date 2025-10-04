@@ -12,6 +12,9 @@ namespace gtfs_manager.Gtfs.Static
         public sealed record StopMeta(string StopId, string? Name, double? Lat, double? Lon);
         public sealed record TripStops(string TripId, IReadOnlyList<string> StopIds, IReadOnlyDictionary<string, int> SeqByStop);
         public sealed record RouteMeta(string RouteId, string? ShortName, string? LongName);
+        public sealed record ShapePoint(double Lat, double Lon, int Seq);
+        public Dictionary<string, List<ShapePoint>> Shapes { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> TripShapeIds { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, RouteMeta> Routes { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, TripMeta> Trips { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, StopMeta> Stops { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -26,6 +29,8 @@ namespace gtfs_manager.Gtfs.Static
             foreach (var t in ReadCsvFromZip<TripRow>(zip, "trips.txt", new TripRowMap()))
             {
                 idx.Trips[t.TripId] = new TripMeta(t.TripId, t.RouteId, t.TripHeadsign);
+                if (!string.IsNullOrWhiteSpace(t.ShapeId))
+                    idx.TripShapeIds[t.TripId] = t.ShapeId!;
             }
 
             // --- stops.txt ---
@@ -62,6 +67,32 @@ namespace gtfs_manager.Gtfs.Static
                 idx.TripStopSeq[tripId] = new TripStops(tripId, ordered, dict);
             }
 
+            // --- shapes.txt ---
+            try
+            {
+                var bag = new Dictionary<string, List<ShapePoint>>(StringComparer.OrdinalIgnoreCase);
+                foreach (var sh in ReadCsvFromZip<ShapeRow>(zip, "shapes.txt", new ShapeRowMap()))
+                {
+                    if (!bag.TryGetValue(sh.ShapeId, out var list))
+                    {
+                        list = new();
+                        bag[sh.ShapeId] = list;
+                    }
+                    list.Add(new ShapePoint(sh.ShapePtLat, sh.ShapePtLon, sh.ShapePtSequence));
+                }
+
+                // posortuj po sequence
+                foreach (var (shapeId, list) in bag)
+                {
+                    list.Sort((a, b) => a.Seq.CompareTo(b.Seq));
+                    idx.Shapes[shapeId] = list;
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                // część feedów nie ma shapes.txt — wtedy fallback na przystanki
+            }
+
             return idx;
         }
 
@@ -91,6 +122,8 @@ namespace gtfs_manager.Gtfs.Static
             public string ServiceId { get; set; } = "";
             public string TripId { get; set; } = "";
             public string? TripHeadsign { get; set; }
+            public string? ShapeId { get; set; }
+
         }
 
         private sealed class TripRowMap : ClassMap<TripRow>
@@ -101,6 +134,8 @@ namespace gtfs_manager.Gtfs.Static
                 Map(m => m.ServiceId).Name("service_id");
                 Map(m => m.TripId).Name("trip_id");
                 Map(m => m.TripHeadsign).Name("trip_headsign").Optional();
+                Map(m => m.ShapeId).Name("shape_id").Optional();
+
             }
         }
 
@@ -159,6 +194,25 @@ namespace gtfs_manager.Gtfs.Static
                 Map(m => m.RouteId).Name("route_id");
                 Map(m => m.RouteShortName).Name("route_short_name").Optional();
                 Map(m => m.RouteLongName).Name("route_long_name").Optional();
+            }
+        }
+
+        private sealed class ShapeRow
+        {
+            public string ShapeId { get; set; } = "";
+            public double ShapePtLat { get; set; }
+            public double ShapePtLon { get; set; }
+            public int ShapePtSequence { get; set; }
+        }
+
+        private sealed class ShapeRowMap : ClassMap<ShapeRow>
+        {
+            public ShapeRowMap()
+            {
+                Map(m => m.ShapeId).Name("shape_id");
+                Map(m => m.ShapePtLat).Name("shape_pt_lat");
+                Map(m => m.ShapePtLon).Name("shape_pt_lon");
+                Map(m => m.ShapePtSequence).Name("shape_pt_sequence");
             }
         }
     }

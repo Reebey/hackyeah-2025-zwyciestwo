@@ -53,3 +53,11 @@ Accept: application/json
 ### Enriched vehicles (z TripUpdates -> lepszy next/eta/delay)
 GET {{host}}/v1/rt/vehicles/enriched?file=VehiclePositions.pb&zip=GTFS_KRK_T.zip&tripUpdates=TripUpdates.pb
 Accept: application/json
+
+### On-route (multi ZIP, shapes-based) — bez heading
+GET {{host}}/v1/map/routes/on-route?lat=50.065&lon=19.945&zips=all&radiusMeters=60
+Accept: application/json
+
+### On-route (z heading 90° = na wschód)
+GET {{host}}/v1/map/routes/on-route?lat=50.065&lon=19.945&zips=all&radiusMeters=60&headingDeg=90
+Accept: application/json

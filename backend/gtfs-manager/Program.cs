@@ -13,6 +13,11 @@ builder.Services.AddSingleton<RealtimeReader>();
 builder.Services.AddSingleton<StaticGtfsReader>();
 builder.Services.AddSingleton<IStaticIndexCache, StaticIndexCache>();
 builder.Services.AddSingleton<VehicleEnricher>();
+builder.Services.AddSingleton<IStaticIndexCache, StaticIndexCache>();
+builder.Services.AddSingleton<IMultiStaticIndexCache, MultiStaticIndexCache>();
+builder.Services.AddSingleton<MultiZipSearcher>();
+builder.Services.AddSingleton<IMultiStaticIndexCache, MultiStaticIndexCache>();
+builder.Services.AddSingleton<OnRouteLocator>();
 
 // OpenAPI (wbudowany generator .NET 9)
 builder.Services.AddOpenApi();
@@ -285,6 +290,25 @@ app.MapGet("/v1/map/routes/by-point", (
     };
 
     return Results.Ok(response);
+});
+
+app.MapGet("/v1/map/routes/on-route", (
+    double lat,
+    double lon,
+    double? radiusMeters,
+    double? headingDeg,
+    string zips,
+    OnRouteLocator locator) =>
+{
+    double radius = radiusMeters is > 0 ? radiusMeters.Value : 60.0;
+
+    List<string> paths = [];
+    var dataFolder = PathInData("");
+
+    paths = Directory.EnumerateFiles(dataFolder, "*.zip", SearchOption.TopDirectoryOnly).ToList();
+
+    var result = locator.RoutesOnRoute(lat, lon, radius, paths, headingDeg);
+    return Results.Ok(result);
 });
 
 
