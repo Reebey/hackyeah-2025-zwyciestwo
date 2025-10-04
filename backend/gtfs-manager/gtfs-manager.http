@@ -34,6 +34,10 @@ Accept: application/json
 GET {{host}}/api/static/stops?zip=GTFS_KRK_T.zip
 Accept: application/json
 
+### Static: Stops (wszystkie)
+GET {{host}}/api/static/stops/all
+Accept: application/json
+
 ### Static: Routes
 GET {{host}}/api/static/routes?zip=GTFS_KRK_T.zip
 Accept: application/json

@@ -1,5 +1,6 @@
 ﻿using gtfs_manager.Gtfs.Realtime;
 using gtfs_manager.Gtfs.Static;
+using gtfs_manager.Gtfs.Static.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
@@ -128,8 +129,6 @@ string GetDataPath(string file)
     return Path.Combine(app.Environment.ContentRootPath, baseDir, file);
 }
 
-app.MapGet("/", () => Results.Ok(new { service = "gtfs-manager", ok = true }));
-
 // === REALTIME (protobuf .pb) ===
 
 app.MapGet("/api/rt/vehicles", (string file, RealtimeReader reader) =>
@@ -164,6 +163,27 @@ app.MapGet("/api/static/stops", (string zip, StaticGtfsReader reader) =>
     if (!System.IO.File.Exists(path)) return Results.NotFound(new { path, error = "file_not_found" });
     var data = reader.ReadStopsFromZip(path);
     return Results.Ok(data);
+});
+
+app.MapGet("/api/static/stops/all", (StaticGtfsReader reader) =>
+{
+    IEnumerable<Stop> stops;
+    var path = GetDataPath("GTFS_KRK_A.zip");
+    if (!System.IO.File.Exists(path)) 
+        return Results.NotFound(new { path, error = "file_not_found" });
+    stops = reader.ReadStopsFromZip(path);
+
+    path = GetDataPath("GTFS_KRK_M.zip");
+    if (!System.IO.File.Exists(path)) 
+        return Results.NotFound(new { path, error = "file_not_found" });
+    stops = stops.Concat(reader.ReadStopsFromZip(path));
+
+    path = GetDataPath("GTFS_KRK_T.zip");
+    if (!System.IO.File.Exists(path)) 
+        return Results.NotFound(new { path, error = "file_not_found" });
+    stops = stops.Concat(reader.ReadStopsFromZip(path));
+
+    return Results.Ok(stops);
 });
 
 app.MapGet("/api/static/routes", (string zip, StaticGtfsReader reader) =>
