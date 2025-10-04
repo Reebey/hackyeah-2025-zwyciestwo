@@ -129,8 +129,6 @@ string GetDataPath(string file)
     return Path.Combine(app.Environment.ContentRootPath, baseDir, file);
 }
 
-app.MapGet("/", () => Results.Ok(new { service = "gtfs-manager", ok = true }));
-
 // === REALTIME (protobuf .pb) ===
 
 app.MapGet("/api/rt/vehicles", (string file, RealtimeReader reader) =>
