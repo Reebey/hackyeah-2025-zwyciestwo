@@ -1,0 +1,51 @@
+@host = http://localhost:5169
+# Jeœli Twój debug uruchomi siê na innym porcie, podmieñ ^^^
+
+### Ping
+GET {{host}}/
+Accept: application/json
+
+### Meta
+GET {{host}}/meta
+Accept: application/json
+
+### Health
+GET {{host}}/health
+Accept: application/json
+
+### OpenAPI JSON
+GET {{host}}/openapi/v1.json
+Accept: application/json
+
+### Realtime: Vehicles
+# Podmieñ nazwê pliku jeœli inna (np. VehiclePositions_T.pb)
+GET {{host}}/api/rt/vehicles?file=VehiclePositions.pb
+Accept: application/json
+
+### Realtime: Trip Updates
+GET {{host}}/api/rt/trip-updates?file=TripUpdates.pb
+Accept: application/json
+
+### Realtime: Alerts
+GET {{host}}/api/rt/alerts?file=ServiceAlerts_T.pb
+Accept: application/json
+
+### Static: Stops (z paczki GTFS zip)
+GET {{host}}/api/static/stops?zip=GTFS_KRK_T.zip
+Accept: application/json
+
+### Static: Routes
+GET {{host}}/api/static/routes?zip=GTFS_KRK_T.zip
+Accept: application/json
+
+### Static: Trips
+GET {{host}}/api/static/trips?zip=GTFS_KRK_T.zip
+Accept: application/json
+
+### Enriched vehicles (bez TripUpdates)
+GET {{host}}/v1/rt/vehicles/enriched?file=VehiclePositions.pb&zip=GTFS_KRK_T.zip
+Accept: application/json
+
+### Enriched vehicles (z TripUpdates -> lepszy next/eta/delay)
+GET {{host}}/v1/rt/vehicles/enriched?file=VehiclePositions.pb&zip=GTFS_KRK_T.zip&tripUpdates=TripUpdates.pb
+Accept: application/json
