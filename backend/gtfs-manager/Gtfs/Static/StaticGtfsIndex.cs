@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Components.Routing;
 using System.Globalization;
 using System.IO.Compression;
 
@@ -10,7 +11,8 @@ namespace gtfs_manager.Gtfs.Static
         public sealed record TripMeta(string TripId, string RouteId, string? Headsign);
         public sealed record StopMeta(string StopId, string? Name, double? Lat, double? Lon);
         public sealed record TripStops(string TripId, IReadOnlyList<string> StopIds, IReadOnlyDictionary<string, int> SeqByStop);
-
+        public sealed record RouteMeta(string RouteId, string? ShortName, string? LongName);
+        public Dictionary<string, RouteMeta> Routes { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, TripMeta> Trips { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, StopMeta> Stops { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, TripStops> TripStopSeq { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -30,6 +32,12 @@ namespace gtfs_manager.Gtfs.Static
             foreach (var s in ReadCsvFromZip<StopRow>(zip, "stops.txt", new StopRowMap()))
             {
                 idx.Stops[s.StopId] = new StopMeta(s.StopId, s.StopName, s.StopLat, s.StopLon);
+            }
+
+            // --- routes.txt ---
+            foreach (var r in ReadCsvFromZip<RouteRow>(zip, "routes.txt", new RouteRowMap()))
+            {
+                idx.Routes[r.RouteId] = new RouteMeta(r.RouteId, r.RouteShortName, r.RouteLongName);
             }
 
             // --- stop_times.txt --- (zbierz sekwencje przystanków per trip)
@@ -134,6 +142,23 @@ namespace gtfs_manager.Gtfs.Static
                 Map(m => m.StopSequence).Name("stop_sequence");
                 Map(m => m.ArrivalTime).Name("arrival_time").Optional();
                 Map(m => m.DepartureTime).Name("departure_time").Optional();
+            }
+        }
+
+        private sealed class RouteRow
+        {
+            public string RouteId { get; set; } = "";
+            public string? RouteShortName { get; set; }
+            public string? RouteLongName { get; set; }
+        }
+
+        private sealed class RouteRowMap : ClassMap<RouteRow>
+        {
+            public RouteRowMap()
+            {
+                Map(m => m.RouteId).Name("route_id");
+                Map(m => m.RouteShortName).Name("route_short_name").Optional();
+                Map(m => m.RouteLongName).Name("route_long_name").Optional();
             }
         }
     }
