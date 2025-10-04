@@ -1,0 +1,39 @@
+﻿@page "/map"
+@inject IJSRuntime JS
+
+<div id="map" style="height:500px; width:100%;"></div>
+
+<p><b>Ostatni punkt:</b> @lastLat, @lastLng</p>
+
+@code {
+    private bool _mapInitialized;
+    private double lastLat;
+    private double lastLng;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _mapInitialized = true;
+            await JS.InvokeVoidAsync("initMap", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void OnMarkerAdded(double lat, double lng)
+    {
+        lastLat = lat;
+        lastLng = lng;
+        StateHasChanged();
+        Console.WriteLine($"Dodano marker: {lat}, {lng}");
+    }
+
+    [JSInvokable]
+    public void OnMarkerMoved(double lat, double lng)
+    {
+        lastLat = lat;
+        lastLng = lng;
+        StateHasChanged();
+        Console.WriteLine($"Przesunięto marker: {lat}, {lng}");
+    }
+}
