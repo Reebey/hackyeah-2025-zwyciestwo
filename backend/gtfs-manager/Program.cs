@@ -300,7 +300,6 @@ app.MapGet("/v1/map/routes/on-route", (
     double lon,
     double? radiusMeters,
     double? headingDeg,
-    string zips,
     OnRouteLocator locator) =>
 {
     double radius = radiusMeters is > 0 ? radiusMeters.Value : 60.0;
