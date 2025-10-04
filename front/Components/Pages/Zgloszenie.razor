@@ -1,0 +1,25 @@
+﻿@page "/zgloszenie"
+@using front.Models
+
+<div class="mb-3">
+  <select id="wybierzTrase" class="form-select">
+    <option selected>Wybierz trasę</option>
+    <option value="1">Trasa A</option>
+    <option value="2">Trasa B</option>
+    <option value="3">Trasa C</option>
+  </select>
+</div>
+
+<div class="mb-3">
+  <select id="typAwarie" class="form-select">
+    <option selected>Typ opóżnienia</option>
+    <option value="awaria">Awaria</option>
+    <option value="opoznienie">Opóźnienie</option>
+    <option value="zmiana-peronu">Zmiana peronu</option>
+  </select>
+</div>
+
+<div class="mb-3">
+  <label for="opis" class="zmiana-peronu">Opis</label>
+  <textarea id="opis" class="form-control" rows="3"></textarea>
+</div>

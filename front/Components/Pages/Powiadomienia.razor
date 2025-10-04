@@ -1,12 +1,45 @@
 ﻿@page "/powiadomienia"
-@using FrontMaui.Models
+@using front.Models
 
 @code {
     List<Powiadomienie> powiadomienia = new List<Powiadomienie>
     {
-        new Powiadomienie { Id=1, Typ="awaria", Opis="Powiadomienie o awarii" },
-        new Powiadomienie { Id=2, Typ="opoznienie", Opis="Powiadomienie o opóźnieniu" },
-        new Powiadomienie { Id=3, Typ="zmiana-peronu", Opis="Powiadomienie o zmianie peronu" }
+        new Powiadomienie
+        {
+            Id = 1,
+            Typ = "awaria",
+            Opis = "Powiadomienie o awarii",
+            Szczegoly = new Szczegoly
+            {
+                Id = 101,
+                Zawartosc = "Uszkodzenie sieci głównej",
+                DataZgloszenia = new DateTime(2025, 10, 4, 14, 30, 0)
+            }
+        },
+        new Powiadomienie
+        {
+            Id = 2,
+            Typ = "opoznienie",
+            Opis = "Powiadomienie o opóźnieniu",
+            Szczegoly = new Szczegoly
+            {
+                Id = 102,
+                Zawartosc = "Opóźnienie pociągu o 15 minut",
+                DataZgloszenia = new DateTime(2025, 10, 4, 15, 45, 0)
+            }
+        },
+        new Powiadomienie
+        {
+            Id = 3,
+            Typ = "zmiana-peronu",
+            Opis = "Powiadomienie o zmianie peronu",
+            Szczegoly = new Szczegoly
+            {
+                Id = 103,
+                Zawartosc = "Zmiana peronu z 5 na 7",
+                DataZgloszenia = new DateTime(2025, 10, 4, 16, 0, 0)
+            }
+        }
     };
 
     private string GetIconClass(string typ) => typ switch
@@ -19,8 +52,7 @@
 }
 
 <div class="container my-3">
-    <h5 class="mb-3">Powiadomienia</h5>
-    <div class="list-group shadow-sm" style="max-height: 250px; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+    <div class="list-group shadow-sm" style="overflow-y: auto; -webkit-overflow-scrolling: touch;">
         @foreach (var p in powiadomienia)
         {
             <div class="list-group-item list-group-item-action d-flex flex-column">
@@ -31,7 +63,31 @@
                 <div>
                     <span>@p.Opis</span>
                 </div>
+                <div class="mt-2">
+                    <button class="btn btn-primary btn-sm" @onclick="() => ToggleDetails(p.Id)">
+                        <i class="fa-solid fa-info-circle me-2"></i> Szczegóły
+                    </button>
+                </div>
+                @if (VisibleDetailsId == p.Id && p.Szczegoly != null)
+                {
+                    <div class="mt-2 border rounded p-2 bg-light">
+                        <p><strong>Zawartość:</strong> @p.Szczegoly.Zawartosc</p>
+                        <p><strong>Data zgłoszenia:</strong> @p.Szczegoly.DataZgloszenia.ToString("yyyy-MM-dd HH:mm")</p>
+                    </div>
+                }
             </div>
         }
     </div>
 </div>
+
+@code {
+    int? VisibleDetailsId;
+
+    void ToggleDetails(int id)
+    {
+        if (VisibleDetailsId == id)
+            VisibleDetailsId = null;
+        else
+            VisibleDetailsId = id;
+    }
+}

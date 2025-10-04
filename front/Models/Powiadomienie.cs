@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FrontMaui.Models
+namespace front.Models
 {
     public class Powiadomienie
     {
         public int Id { get; set; }
-        public string Typ { get; set; }
-        public string Opis { get; set; }
-        public Szczegoly Szczegoly { get; set; }
+        public string Typ { get; set; } = string.Empty;
+        public string Opis { get; set; } = string.Empty;
+        public Szczegoly Szczegoly { get; set; } = new();
 
         public string TypDisplay
         {
