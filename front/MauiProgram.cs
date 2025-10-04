@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using front.Services;
+using Microsoft.Extensions.Logging;
 
 namespace front
 {
@@ -13,6 +14,13 @@ namespace front
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
+
+            builder.Services.AddHttpClient("NotificationsClient", client =>
+            {
+                client.BaseAddress = new Uri("https://api.example.com/");
+                client.Timeout = TimeSpan.FromSeconds(10);
+            });
+            builder.Services.AddSingleton<PowiadomieniaSerwis>();
 
             builder.Services.AddMauiBlazorWebView();
 
