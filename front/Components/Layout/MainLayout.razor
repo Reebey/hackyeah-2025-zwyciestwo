@@ -13,3 +13,28 @@
         <NavMenu />
     </main>
 </div>
+
+<script>
+window.getCurrentLocation = function () {
+    return new Promise(function (resolve, reject) {
+        if (navigator.geolocation) {
+            console.log("Geolocation supported, requesting position...");
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    console.log("Position received:", position.coords.latitude, position.coords.longitude);
+                    resolve({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    });
+                },
+                function (error) {
+                    console.log("Geolocation error:", error);
+                    resolve(null);
+                });
+        } else {
+            console.log("Geolocation not supported by this browser.");
+            resolve(null);
+        }
+    });
+};
+</script>

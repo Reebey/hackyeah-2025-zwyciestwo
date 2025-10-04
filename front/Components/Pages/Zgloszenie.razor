@@ -1,18 +1,16 @@
 ﻿@page "/zgloszenie"
-@using front.Models
+@using System.Text.Json
+@inject IJSRuntime JS
 
 <div class="mb-3">
-  <select id="wybierzTrase" class="form-select">
-    <option selected>Wybierz trasę</option>
-    <option value="1">Trasa A</option>
-    <option value="2">Trasa B</option>
-    <option value="3">Trasa C</option>
-  </select>
+  <select class="form-select" @bind="SelectedTrasa">
+    <option value="">Wybrana trasa</option>
+   </select>
 </div>
 
 <div class="mb-3">
-  <select id="typAwarie" class="form-select">
-    <option selected>Typ opóżnienia</option>
+  <select class="form-select" @bind="SelectedTypAwarie">
+    <option value="">Typ opóźnienia</option>
     <option value="awaria">Awaria</option>
     <option value="opoznienie">Opóźnienie</option>
     <option value="zmiana-peronu">Zmiana peronu</option>
@@ -20,6 +18,23 @@
 </div>
 
 <div class="mb-3">
-  <label for="opis" class="zmiana-peronu">Opis</label>
-  <textarea id="opis" class="form-control" rows="3"></textarea>
+  <label for="opis" class="form-label">Opis</label>
+  <textarea id="opis" class="form-control" @bind="Opis" rows="3"></textarea>
 </div>
+
+@code {
+    string SelectedTrasa { get; set; }
+    string SelectedTypAwarie { get; set; }
+    string Opis { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var location = await JS.InvokeAsync<Location>("getCurrentLocation");
+    }
+
+    public class Location
+    {
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+    }
+}
