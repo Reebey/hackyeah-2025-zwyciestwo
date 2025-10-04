@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{1AE8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gtfs-manager", "backend\gtfs-manager\gtfs-manager.csproj", "{031B4DC9-2197-4C76-A602-E4CBEFB90C26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "front", "front\front.csproj", "{CAFD37BC-EEC8-C546-D43C-87317E038C41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,10 @@ Global
 		{031B4DC9-2197-4C76-A602-E4CBEFB90C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{031B4DC9-2197-4C76-A602-E4CBEFB90C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{031B4DC9-2197-4C76-A602-E4CBEFB90C26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAFD37BC-EEC8-C546-D43C-87317E038C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAFD37BC-EEC8-C546-D43C-87317E038C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAFD37BC-EEC8-C546-D43C-87317E038C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAFD37BC-EEC8-C546-D43C-87317E038C41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
