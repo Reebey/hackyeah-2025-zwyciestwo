@@ -61,3 +61,31 @@ Accept: application/json
 ### On-route (z heading 90° = na wschód)
 GET {{host}}/v1/map/routes/on-route?lat=50.065&lon=19.945&zips=all&radiusMeters=60&headingDeg=90
 Accept: application/json
+
+### Rejestracja usera (opcjonalne — i tak tworzymy on-the-fly przy POST /reports)
+POST {{host}}/v1/users/register
+Content-Type: application/json
+
+{
+  "id": "user-123"
+}
+
+### Zg³oszenie alertu (report) powi¹zanego z userem
+POST {{host}}/v1/reports
+Content-Type: application/json
+
+{
+  "userId": "user-123",
+  "title": "Awaria tramwaju",
+  "description": "Zablokowany tor, stojê od 10 minut",
+  "lat": 50.06465,
+  "lon": 19.94498,
+  "routeId": "4",
+  "tripId": null,
+  "delayMinutes": 12
+}
+
+### Pobranie szczegó³ów zg³oszenia
+# wstaw tu Id z odpowiedzi Created (Location lub body.Id)
+GET {{host}}/v1/reports/1a244100c1394d26bb53967113addfe7
+Accept: application/json

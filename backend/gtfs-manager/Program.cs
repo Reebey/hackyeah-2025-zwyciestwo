@@ -1,6 +1,7 @@
 ﻿using gtfs_manager.Gtfs.Realtime;
 using gtfs_manager.Gtfs.Static;
 using gtfs_manager.Gtfs.Static.Models;
+using gtfs_manager.Storage;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
@@ -18,6 +19,8 @@ builder.Services.AddSingleton<IMultiStaticIndexCache, MultiStaticIndexCache>();
 builder.Services.AddSingleton<MultiZipSearcher>();
 builder.Services.AddSingleton<IMultiStaticIndexCache, MultiStaticIndexCache>();
 builder.Services.AddSingleton<OnRouteLocator>();
+builder.Services.AddSingleton<IInMemoryReportStore, InMemoryReportStore>();
+
 
 // OpenAPI (wbudowany generator .NET 9)
 builder.Services.AddOpenApi();
@@ -310,6 +313,47 @@ app.MapGet("/v1/map/routes/on-route", (
     var result = locator.RoutesOnRoute(lat, lon, radius, paths, headingDeg);
     return Results.Ok(result);
 });
+
+// Rejestracja użytkownika (tylko Id). Id może być np. hash/cookie z frontu.
+// Body: { "id": "user-123" }
+app.MapPost("/v1/users/register", (User user, IInMemoryReportStore store) =>
+{
+    if (user is null || string.IsNullOrWhiteSpace(user.Id))
+        return Results.BadRequest(new { error = "user_id_required" });
+
+    var saved = store.UpsertUser(user.Id);
+    return Results.Ok(saved);
+})
+.WithName("RegisterUser");
+
+// Zgłoszenie alertu/zdarzenia na trasie (pasażer)
+// Body: CreateReportDto
+app.MapPost("/v1/reports", (CreateReportDto body, IInMemoryReportStore store) =>
+{
+    try
+    {
+        var rep = store.CreateReport(body);
+        return Results.Created($"/v1/reports/{rep.Id}", rep);
+    }
+    catch (ArgumentException aex)
+    {
+        return Results.BadRequest(new { error = "validation_failed", message = aex.Message });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(title: "Could not create report", detail: ex.Message, statusCode: 500);
+    }
+})
+.WithName("CreateReport");
+
+// Szczegóły zgłoszenia
+app.MapGet("/v1/reports/{id}", (string id, IInMemoryReportStore store) =>
+{
+    return store.TryGetReport(id, out var rep)
+        ? Results.Ok(rep)
+        : Results.NotFound(new { error = "not_found", id });
+})
+.WithName("GetReport");
 
 
 app.Run();
