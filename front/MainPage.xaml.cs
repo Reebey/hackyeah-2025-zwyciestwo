@@ -1,4 +1,4 @@
-﻿namespace FrontMaui
+﻿namespace front
 {
     public partial class MainPage : ContentPage
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace FrontMaui
+namespace front
 {
     public static class MauiProgram
     {

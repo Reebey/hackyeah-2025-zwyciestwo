@@ -1,4 +1,4 @@
-﻿namespace FrontMaui
+﻿namespace front
 {
     public partial class App : Application
     {
@@ -9,7 +9,7 @@
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new MainPage()) { Title = "FrontMaui" };
+            return new Window(new MainPage()) { Title = "front" };
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace FrontMaui
+namespace front
 {
     [Application]
     public class MainApplication : MauiApplication

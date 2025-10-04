@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace FrontMaui
+namespace front
 {
     public class Program
     {
