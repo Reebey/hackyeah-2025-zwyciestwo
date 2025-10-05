@@ -22,6 +22,7 @@ namespace front
             });
             builder.Services.AddSingleton<PowiadomieniaSerwis>();
             builder.Services.AddSingleton<ZgloszenieSerwis>();
+            builder.Services.AddSingleton<StacjeSerwis>();
 
             builder.Services.AddMauiBlazorWebView();
 

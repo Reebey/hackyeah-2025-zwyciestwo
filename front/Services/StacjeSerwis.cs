@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace front.Services;
 
-public class TrasySerwis
+public class StacjeSerwis
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly ILogger<PowiadomieniaSerwis> _logger;
 
-    public TrasySerwis(IHttpClientFactory clientFactory, ILogger<PowiadomieniaSerwis> logger)
+    public StacjeSerwis(IHttpClientFactory clientFactory, ILogger<PowiadomieniaSerwis> logger)
     {
         _clientFactory = clientFactory;
         _logger = logger;
@@ -24,7 +24,7 @@ public class TrasySerwis
     {
         try
         {
-            var client = _clientFactory.CreateClient("ZgloszeniaClient");
+            var client = _clientFactory.CreateClient("StacjeSerwis");
             var stops = await client.GetFromJsonAsync<List<Stop>>($"https://localhost:7042/api/static/stops/all");
             return stops ?? new List<Stop>();
         }

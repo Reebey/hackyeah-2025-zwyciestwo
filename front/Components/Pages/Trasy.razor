@@ -1,28 +1,40 @@
 ﻿@page "/trasy"
-@inject front.Services.TrasySerwis trasySerwis
+@using front.Models
+@inject front.Services.StacjeSerwis stacjeSerwis
+@using Blazored.Typeahead
 
 <div class="container mt-4">
     <form id="searchForm" class="row g-3 align-items-end">
         <div class="col-md-3">
             <label for="stacjaPoczatkowa" class="form-label">Stacja początkowa</label>
-            <select class="form-select" id="stacjaPoczatkowa" @bind="SelectedTrasa" required>
-                <option value="" selected disabled>Wybierz stację początkową</option>
-                @* @foreach (var trasa in trasySerwis.GetStacje()) *@
-                @* { *@
-                @*     <option value="@trasa.routeId">@($"{trasa.routeShortName} - {trasa.distanceMeters}m")</option> *@
-                @* } *@
-            </select>
+            <BlazoredTypeahead SearchMethod="SearchStacje"
+                   Placeholder="Wpisz nazwę stacji..."
+                   @bind-Value="@stacjaPoczatkowa"
+                   Debounce="10"
+                   id="stacjaPoczatkowa">
+                <SelectedTemplate>
+                    @context.StopName
+                </SelectedTemplate>
+                <ResultTemplate>
+                    @context.StopName
+                </ResultTemplate>
+            </BlazoredTypeahead>
         </div>
 
         <div class="col-md-3">
             <label for="stacjaDocelowa" class="form-label">Stacja docelowa</label>
-            <select class="form-select" id="stacjaDocelowa" required>
-                <option value="" selected disabled>Wybierz stację docelową</option>
-                <option value="gdansk">Gdańsk</option>
-                <option value="szczecin">Szczecin</option>
-                <option value="lodz">Łódź</option>
-                <option value="katowice">Katowice</option>
-            </select>
+            <BlazoredTypeahead SearchMethod="SearchStacje"
+                   Placeholder="Wpisz nazwę stacji..."
+                   @bind-Value="@stacjaDocelowa"
+                   Debounce="10"
+                   id="stacjaDocelowa">
+                <SelectedTemplate>
+                    @context.StopName
+                </SelectedTemplate>
+                <ResultTemplate>
+                    @context.StopName
+                </ResultTemplate>
+            </BlazoredTypeahead>
         </div>
 
         <div class="input-group" id="datetimepicker" data-td-target-input="nearest" data-td-target-toggle="nearest">
@@ -51,5 +63,23 @@
 </div>
 
 @code {
-    public string? SelectedTrasa { get; set; }
+    private List<Stop>? stacje = new();
+    private Stop? stacjaPoczatkowa;
+    private Stop? stacjaDocelowa;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        stacje = await stacjeSerwis.GetStacje();
+    }
+
+    private Task<IEnumerable<Stop>> SearchStacje(string searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return Task.FromResult(stacje.AsEnumerable());
+
+        var wyniki = stacje
+            .Where(s => s.StopName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+
+        return Task.FromResult(wyniki);
+    }
 }
