@@ -54,12 +54,32 @@
     <hr />
 
     <h5>Trasy</h5>
-    <ul class="list-group" id="trasyList"></ul>
+    <ul class="list-group" id="trasyList">
+        @foreach (var trasa in trasy)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                @trasa.Name
+                <button class="btn btn-sm btn-outline-warning" @onclick="() => AddToFavorites(trasa)">
+                    <i class="fa fa-star"></i>
+                </button>
+            </li>
+        }
+    </ul>
 
     <hr />
 
     <h5>Ulubione trasy</h5>
-    <ul class="list-group" id="favouritesList"></ul>
+    <ul class="list-group" id="favouritesList">
+    @foreach (var fav in favouriteTrasy)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            @fav.Name
+            <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveFromFavorites(fav)">
+                <i class="fa fa-times"></i>
+            </button>
+        </li>
+    }
+    </ul>
 </div>
 
 @code {
@@ -67,7 +87,34 @@
     private List<Stop>? stacje = new();
     private Stop? stacjaPoczatkowa;
     private Stop? stacjaDocelowa;
-    
+
+    private List<RouteModel> trasy = new()
+    {
+        new RouteModel { Id = 1, Name = "Warszawa - Kraków" },
+        new RouteModel { Id = 2, Name = "Gdańsk - Wrocław" },
+        new RouteModel { Id = 3, Name = "Poznań - Katowice" }
+    };
+
+    private List<RouteModel> favouriteTrasy = new();
+
+    private void AddToFavorites(RouteModel trasa)
+    {
+        if (!favouriteTrasy.Any(t => t.Id == trasa.Id))
+        {
+            trasy.Remove(trasa);
+            favouriteTrasy.Add(trasa);
+        }
+    }
+
+    private void RemoveFromFavorites(RouteModel trasa)
+    {
+        if (favouriteTrasy.Contains(trasa))
+        {
+            favouriteTrasy.Remove(trasa);
+            trasy.Add(trasa);
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         stacje = await stacjeSerwis.GetStacje();
