@@ -1,9 +1,10 @@
 ﻿@page "/map"
 @inject IJSRuntime JS
 
-<div id="map" style="height:500px; width:100%;"></div>
+<div id="map" style="height:100vh; width:100%; margin: 0; padding: 0;"></div>
 
-<p><b>Ostatni punkt:</b> @lastLat, @lastLng</p>
+@* <p><b>Ostatni punkt:</b> @lastLat, @lastLng</p> *@
+
 
 @code {
     private bool _mapInitialized;
