@@ -63,9 +63,15 @@
                 <div>
                     <span>@p.Opis</span>
                 </div>
-                <div class="mt-2">
+                <div class="mt-2 d-flex align-items-center gap-2">
                     <button class="btn btn-primary btn-sm" @onclick="() => ToggleDetails(p.Id)">
                         <i class="fa-solid fa-info-circle me-2"></i> Szczegóły
+                    </button>
+                    <button class="btn btn-success btn-sm" title="Like">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm" title="Dislike">
+                        <i class="fa-solid fa-thumbs-down"></i>
                     </button>
                 </div>
                 @if (VisibleDetailsId == p.Id && p.Szczegoly != null)

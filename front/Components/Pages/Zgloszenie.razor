@@ -6,33 +6,35 @@
 
 @inject IJSRuntime JS
 
-<div class="mb-3">
-    <select class="form-select" @bind="SelectedTrasa">
-        <option value="">Wybrana trasa</option>
-        @foreach(var trasa in Trasy)
-        {
-            <option value="@trasa.routeId">@($"{trasa.routeShortName} - {trasa.distanceMeters}m")</option>
-        }
-    </select>
-</div>
+<div class="container my-3">
+    <div class="mb-3">
+        <select class="form-select" @bind="SelectedTrasa">
+            <option value="">Wybrana trasa</option>
+            @foreach(var trasa in Trasy)
+            {
+                <option value="@trasa.routeId">@($"{trasa.routeShortName} - {trasa.distanceMeters}m")</option>
+            }
+        </select>
+    </div>
 
-<div class="mb-3">
-    <select class="form-select" @bind="SelectedTypAwarie">
-        <option value="">Typ opóźnienia</option>
-        <option value="awaria">Awaria</option>
-        <option value="opoznienie">Opóźnienie</option>
-        <option value="zmiana-peronu">Zmiana peronu</option>
-    </select>
-</div>
+    <div class="mb-3">
+        <select class="form-select" @bind="SelectedTypAwarie">
+            <option value="">Typ opóźnienia</option>
+            <option value="awaria">Awaria</option>
+            <option value="opoznienie">Opóźnienie</option>
+            <option value="zmiana-peronu">Zmiana peronu</option>
+        </select>
+    </div>
 
-<div class="mb-3">
-    <label for="opis" class="form-label">Opis</label>
-    <textarea id="opis" class="form-control" @bind="Opis" rows="3"></textarea>
-</div>
+    <div class="mb-3">
+        <label for="opis" class="form-label">Opis</label>
+        <textarea id="opis" class="form-control" @bind="Opis" rows="3"></textarea>
+    </div>
 
-<button class="btn btn-primary" @onclick="DodajZgloszenie">
-    <i class="fa-solid fa-plus me-2"></i> Dodaj zgłoszenie
-</button>
+    <button class="btn btn-primary" @onclick="DodajZgloszenie">
+        <i class="fa-solid fa-plus me-2"></i> Dodaj zgłoszenie
+    </button>
+</div>
 
 @code {
     string SelectedTrasa { get; set; }
