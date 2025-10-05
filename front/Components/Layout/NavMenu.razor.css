@@ -48,16 +48,7 @@
 
 .nav-item {
     font-size: 0.9rem;
-    padding-bottom: 0.5rem;
 }
-
-    .nav-item:first-of-type {
-        padding-top: 1rem;
-    }
-
-    .nav-item:last-of-type {
-        padding-bottom: 1rem;
-    }
 
     .nav-item ::deep a {
         color: #d7d7d7;
@@ -65,7 +56,7 @@
         height: 3rem;
         display: flex;
         align-items: center;
-        line-height: 3rem;
+        line-height: 3.2rem;
     }
 
         .nav-item ::deep a.active {
@@ -84,6 +75,18 @@
 
 .navbar-toggler:checked ~ .nav-scrollable {
     display: block;
+}
+
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* pionowo centrowanie */
+    align-items: center;     /* poziome centrowanie */
+    text-align: center;
+    height: 100%;
+}
+.nav-link i {
+    margin-bottom: 0.25rem; /* odrobina odstępu między ikoną a tekstem */
 }
 
 @media (min-width: 641px) {
