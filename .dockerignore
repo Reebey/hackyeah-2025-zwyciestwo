@@ -1,0 +1,5 @@
+bin
+obj
+Data
+.git
+node_modules

@@ -1,6 +1,5 @@
 ﻿using gtfs_manager.Gtfs.Realtime.Dtos;
 using gtfs_manager.Gtfs.Static;
-using ProtoBuf;
 using TransitRealtime;
 
 namespace gtfs_manager.Gtfs.Realtime
@@ -106,16 +105,16 @@ namespace gtfs_manager.Gtfs.Realtime
         private static Dictionary<string, (int? delayMin, long? eta, string? nextStopId, uint? nextSeq)> BuildTripUpdateMap(string tripUpdatesPbPath)
         {
             using var fs = File.OpenRead(tripUpdatesPbPath);
-            var feed = Serializer.Deserialize<FeedMessage>(fs);
+            var feed = FeedMessage.Parser.ParseFrom(fs);
             var map = new Dictionary<string, (int?, long?, string?, uint?)>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var e in feed.Entities)
+            foreach (var e in feed.Entity)
             {
                 var tu = e.TripUpdate;
                 if (tu == null || string.IsNullOrWhiteSpace(tu.Trip?.TripId)) continue;
 
                 // bierz pierwszy „przyszły” stop (StopTimeUpdate z Arrival/Departure w przyszłości) — proste MVP
-                var next = tu.StopTimeUpdates.FirstOrDefault();
+                var next = tu.StopTimeUpdate.FirstOrDefault();
                 int? delayMin = next?.Arrival?.Delay ?? next?.Departure?.Delay;
                 if (delayMin.HasValue) delayMin = (int)Math.Round(delayMin.Value / 60.0);
 
