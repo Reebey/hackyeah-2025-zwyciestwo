@@ -21,20 +21,16 @@ services:
     networks: [appnet]
 
   web:
-      image: node:20-alpine
-      container_name: gtfs-front
-      working_dir: /app
-      environment:
-        VITE_API_URL: "http://localhost:5089"
-      ports:
-        - "5173:5173"
-      volumes:
-        - ./front:/app
-        - /app/node_modules
-      command: sh -c "npm ci --no-audit --no-fund && npm run dev -- --host 0.0.0.0 --port 5173"
-      depends_on:
-        - api
-      networks: [appnet]
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: gtfs-front
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+    command: ["dotnet","watch","run","--urls","http://0.0.0.0:8080"]
+    networks: [appnet]
 
 networks:
   appnet:
