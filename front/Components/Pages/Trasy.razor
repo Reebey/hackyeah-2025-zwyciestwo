@@ -1,15 +1,16 @@
 ﻿@page "/trasy"
+@inject front.Services.TrasySerwis trasySerwis
 
 <div class="container mt-4">
     <form id="searchForm" class="row g-3 align-items-end">
         <div class="col-md-3">
             <label for="stacjaPoczatkowa" class="form-label">Stacja początkowa</label>
-            <select class="form-select" id="stacjaPoczatkowa" required>
+            <select class="form-select" id="stacjaPoczatkowa" @bind="SelectedTrasa" required>
                 <option value="" selected disabled>Wybierz stację początkową</option>
-                <option value="warszawa">Warszawa</option>
-                <option value="krakow">Kraków</option>
-                <option value="wroclaw">Wrocław</option>
-                <option value="poznan">Poznań</option>
+                @* @foreach (var trasa in trasySerwis.GetStacje()) *@
+                @* { *@
+                @*     <option value="@trasa.routeId">@($"{trasa.routeShortName} - {trasa.distanceMeters}m")</option> *@
+                @* } *@
             </select>
         </div>
 
@@ -48,3 +49,7 @@
     <h5>Ulubione trasy</h5>
     <ul class="list-group" id="favouritesList"></ul>
 </div>
+
+@code {
+    public string? SelectedTrasa { get; set; }
+}

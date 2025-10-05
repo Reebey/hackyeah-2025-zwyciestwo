@@ -1,44 +1,64 @@
 ﻿@page "/zgloszenie"
 @using System.Text.Json
+@using front.Models
+@using front.Services
+@inject front.Services.ZgloszenieSerwis zgloszenieSerwis
+
 @inject IJSRuntime JS
 
 <div class="mb-3">
-  <select class="form-select" @bind="SelectedTrasa">
-    <option value="">Wybrana trasa</option>
-   </select>
+    <select class="form-select" @bind="SelectedTrasa">
+        <option value="">Wybrana trasa</option>
+        @foreach(var trasa in Trasy)
+        {
+            <option value="@trasa.routeId">@($"{trasa.routeShortName} - {trasa.distanceMeters}m")</option>
+        }
+    </select>
 </div>
 
 <div class="mb-3">
-  <select class="form-select" @bind="SelectedTypAwarie">
-    <option value="">Typ opóźnienia</option>
-    <option value="awaria">Awaria</option>
-    <option value="opoznienie">Opóźnienie</option>
-    <option value="zmiana-peronu">Zmiana peronu</option>
-  </select>
+    <select class="form-select" @bind="SelectedTypAwarie">
+        <option value="">Typ opóźnienia</option>
+        <option value="awaria">Awaria</option>
+        <option value="opoznienie">Opóźnienie</option>
+        <option value="zmiana-peronu">Zmiana peronu</option>
+    </select>
 </div>
 
 <div class="mb-3">
-  <label for="opis" class="form-label">Opis</label>
-  <textarea id="opis" class="form-control" @bind="Opis" rows="3"></textarea>
+    <label for="opis" class="form-label">Opis</label>
+    <textarea id="opis" class="form-control" @bind="Opis" rows="3"></textarea>
 </div>
 
-<button class="btn btn-primary">
-  <i class="fa-solid fa-plus me-2"></i> Dodaj zgłoszenie
+<button class="btn btn-primary" @onclick="DodajZgloszenie">
+    <i class="fa-solid fa-plus me-2"></i> Dodaj zgłoszenie
 </button>
 
 @code {
     string SelectedTrasa { get; set; }
     string SelectedTypAwarie { get; set; }
     string Opis { get; set; }
+    protected List<Candidate> Trasy { get; set; } = new();
+    protected Location? Location { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var location = await JS.InvokeAsync<Location>("getCurrentLocation");
+        Location = await JS.InvokeAsync<Location>("getCurrentLocation");
+        Trasy = await zgloszenieSerwis.GetNearbyRoutesAsync(Location!);
     }
 
-    public class Location
+    public async Task DodajZgloszenie()
     {
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        var zgloszenie = new CreateReportDto
+            {
+                UserId = "123",
+                Title = SelectedTypAwarie,
+                Description = Opis,
+                Lat = Location!.Latitude,
+                Lon = Location!.Longitude,
+                RouteId = SelectedTrasa
+            };
+
+        await zgloszenieSerwis.AddReport(zgloszenie);
     }
 }

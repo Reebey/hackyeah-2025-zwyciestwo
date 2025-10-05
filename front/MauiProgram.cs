@@ -21,6 +21,7 @@ namespace front
                 client.Timeout = TimeSpan.FromSeconds(10);
             });
             builder.Services.AddSingleton<PowiadomieniaSerwis>();
+            builder.Services.AddSingleton<ZgloszenieSerwis>();
 
             builder.Services.AddMauiBlazorWebView();
 
